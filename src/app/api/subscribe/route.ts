@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+
   const { email } = await req.json();
 
   if (!email) {
@@ -9,50 +10,49 @@ export async function POST(req: NextRequest) {
 
   try {
 
-    // 1️⃣ Send notification email to you
-    await fetch("https://api.resend.com/emails", {
+    // SEND EMAIL TO YOU
+    const notify = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Nivora <vishnunair@nivoraorganics.com>",
+        from: "Nivora <onboarding@resend.dev>",
         to: "vishnunair@nivoraorganics.com",
         subject: "🌿 New Nivora Waitlist Signup",
-        html: `
-          <div style="font-family:sans-serif;padding:20px;">
-            <h2>New Waitlist Signup</h2>
-            <p>Email: <strong>${email}</strong></p>
-          </div>
-        `,
+        html: `<p>New subscriber: <strong>${email}</strong></p>`
       }),
     });
 
-    // 2️⃣ Send welcome email to subscriber
-    await fetch("https://api.resend.com/emails", {
+    console.log("notify status", notify.status);
+
+    // SEND WELCOME EMAIL
+    const welcome = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Nivora <vishnunair@nivoraorganics.com>",
+        from: "Nivora <onboarding@resend.dev>",
         to: email,
         subject: "Welcome to Nivora Early Access 🌿",
         html: `
-          <div style="font-family:sans-serif;padding:24px;">
-            <h2>Welcome to Nivora 🌿</h2>
-            <p>Thank you for joining the Nivora Organics early access list.</p>
-            <p>You will be the first to know when our premium Kerala turmeric launches.</p>
-            <br/>
-            <p>— Nivora Organics</p>
-          </div>
-        `,
+        <div style="font-family:sans-serif">
+          <h2>Welcome to Nivora 🌿</h2>
+          <p>Thank you for joining our early access list.</p>
+          <p>You will be the first to know when our premium Kerala turmeric launches.</p>
+          <br/>
+          <p>— Nivora Organics</p>
+        </div>
+        `
       }),
     });
 
-    // 3️⃣ Save email to Google Sheet
+    console.log("welcome status", welcome.status);
+
+    // SAVE TO GOOGLE SHEETS
     await fetch(
       "https://script.google.com/macros/s/AKfycbxllRk-zHtPTGjAg9i8a9KcDNda6jVQen_JUh1u1TWawJ9tke3j0YlvsAYlExIg9BMK/exec",
       {
@@ -67,7 +67,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: "Signup failed" }, { status: 500 });
+
+    console.error("signup error", error);
+
+    return NextResponse.json(
+      { error: "Signup failed" },
+      { status: 500 }
+    );
+
   }
+
 }
