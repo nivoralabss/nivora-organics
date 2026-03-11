@@ -7,22 +7,28 @@ export default function Home() {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async () => {
-    if (!email || !email.includes("@")) return;
-    setLoading(true);
-    try {
-      await fetch("https://script.google.com/macros/s/AKfycbzM9R0BqkuBEXdZh1JwqLn7JBwyT2mrx1zIB1j77372b3LoXpqsP43zJTNBhRZALwDX/exec", {
-        method: "POST",
-        mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source: "Website Hero" }),
-      });
-      setSubmitted(true);
-      setEmail("");
-    } catch (err) {
-      console.error(err);
-    }
-    setLoading(false);
-  };
+  if (!email) return;
+
+  setLoading(true);
+
+  try {
+    await fetch("/api/subscribe", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    setSubmitted(true);
+    setEmail("");
+
+  } catch (error) {
+    console.error(error);
+  }
+
+  setLoading(false);
+};
 
   return (
     <>
