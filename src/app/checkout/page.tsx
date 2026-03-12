@@ -40,7 +40,7 @@ export default function CheckoutPage() {
       description: "Proven Pure Spices",
       order_id: data.id,
       handler: async (response: any) => {
-        // Save order to Supabase after payment success
+        // Save order to Supabase after successful payment
         await fetch("/api/create-order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
