@@ -40,6 +40,17 @@ export default function CheckoutPage() {
       description: "Proven Pure Spices",
       order_id: data.id,
       handler: async (response: any) => {
+        // Save order to Supabase after payment success
+        await fetch("/api/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            amount: total,
+            payment_id: response.razorpay_payment_id,
+            customer: form,
+            items: items,
+          }),
+        });
         clearCart();
         router.push("/order-confirmed");
       },
