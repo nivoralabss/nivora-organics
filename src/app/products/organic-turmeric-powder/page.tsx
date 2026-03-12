@@ -1,12 +1,21 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useCart } from "../../context/CartContext";
 
 export default function TurmericPage() {
+  const { addItem, count } = useCart();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
   const handleAddToCart = () => {
+    addItem({
+      slug: "organic-turmeric-powder",
+      name: "Organic Turmeric Powder",
+      price: 149,
+      qty,
+      image: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=800&q=90",
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -28,97 +37,83 @@ export default function TurmericPage() {
           backdrop-filter: blur(16px);
           border-bottom: 1px solid rgba(201,138,20,0.12);
         }
-        .nav-logo {
-          font-family: 'Cormorant Garamond', serif;
-          color: var(--gold); font-size: 19px; letter-spacing: 4px; font-weight: 600;
-          text-decoration: none;
-        }
+        .nav-logo { font-family: 'Cormorant Garamond', serif; color: var(--gold); font-size: 19px; letter-spacing: 4px; font-weight: 600; text-decoration: none; }
         .nav-right { display: flex; align-items: center; gap: 36px; }
-        .nav-link {
-          color: rgba(250,246,238,0.6); font-size: 11px; letter-spacing: 2px;
-          text-transform: uppercase; text-decoration: none; font-weight: 500; transition: color 0.2s;
-        }
+        .nav-link { color: rgba(250,246,238,0.6); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; font-weight: 500; transition: color 0.2s; }
         .nav-link:hover { color: var(--gold); }
+        .nav-cart { color: var(--gold); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; font-weight: 600; }
 
-        .product-layout {
-          display: grid; grid-template-columns: 1fr 1fr;
-          min-height: 100vh; padding-top: 72px;
-        }
+        .product-wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; padding-top: 72px; }
+        .product-gallery { position: sticky; top: 72px; height: calc(100vh - 72px); overflow: hidden; }
+        .product-gallery img { width: 100%; height: 100%; object-fit: cover; }
 
-        .product-gallery {
-          position: sticky; top: 72px; height: calc(100vh - 72px);
-          overflow: hidden;
-        }
-        .product-gallery img {
-          width: 100%; height: 100%; object-fit: cover;
-        }
-
-        .product-info {
-          padding: 72px 64px; background: var(--ink);
-          overflow-y: auto;
-        }
-
-        .breadcrumb { display: flex; gap: 8px; align-items: center; margin-bottom: 40px; }
-        .breadcrumb a { color: rgba(250,246,238,0.3); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; font-weight: 500; }
+        .product-detail { padding: 72px 64px; background: var(--ink); }
+        .breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 40px; }
+        .breadcrumb a { color: rgba(250,246,238,0.3); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; text-decoration: none; transition: color 0.2s; }
         .breadcrumb a:hover { color: var(--gold); }
         .breadcrumb-sep { color: rgba(250,246,238,0.15); font-size: 11px; }
 
         .product-tag { display: inline-block; border: 1px solid rgba(201,138,20,0.35); color: var(--gold); font-size: 9px; letter-spacing: 3px; text-transform: uppercase; padding: 7px 14px; margin-bottom: 24px; font-weight: 600; }
-        .product-name { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 700; line-height: 1.05; margin-bottom: 10px; }
-        .product-sub { color: rgba(201,138,20,0.85); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; font-weight: 600; }
+        .product-title { font-family: 'Cormorant Garamond', serif; color: #fff; font-size: 52px; line-height: 1.05; margin-bottom: 8px; font-weight: 700; }
+        .product-subtitle { color: rgba(201,138,20,0.85); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 32px; font-weight: 600; }
 
-        .price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 36px; padding-bottom: 36px; border-bottom: 1px solid rgba(201,138,20,0.1); }
-        .price-main { font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 700; color: var(--gold); }
+        .price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+        .price-main { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; color: var(--gold); }
         .price-mrp { font-size: 16px; color: rgba(250,246,238,0.25); text-decoration: line-through; }
-        .price-save { font-size: 11px; color: #6db87a; letter-spacing: 1px; font-weight: 600; background: rgba(109,184,122,0.1); padding: 4px 10px; }
+        .price-save { font-size: 11px; color: #4caf7d; letter-spacing: 1px; font-weight: 600; }
+        .price-note { color: rgba(250,246,238,0.3); font-size: 12px; margin-bottom: 36px; }
 
-        .section-title { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(250,246,238,0.3); margin-bottom: 16px; font-weight: 600; }
+        .divider { height: 1px; background: rgba(201,138,20,0.12); margin: 32px 0; }
 
-        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-bottom: 36px; }
-        .spec-item { background: rgba(250,246,238,0.03); padding: 20px; border-top: 1px solid rgba(201,138,20,0.15); }
-        .spec-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: rgba(250,246,238,0.25); margin-bottom: 6px; font-weight: 600; }
-        .spec-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; color: var(--cream); }
+        .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; }
+        .spec-item { padding: 16px; background: rgba(250,246,238,0.03); border: 1px solid rgba(201,138,20,0.12); }
+        .spec-label { color: rgba(250,246,238,0.3); font-size: 9px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; font-weight: 600; }
+        .spec-value { color: var(--cream); font-size: 14px; font-weight: 500; }
 
-        .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
-        .qty-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: rgba(250,246,238,0.3); font-weight: 600; }
-        .qty-controls { display: flex; align-items: center; gap: 0; border: 1px solid rgba(250,246,238,0.1); }
-        .qty-btn { width: 40px; height: 40px; background: transparent; color: var(--cream); font-size: 18px; border: none; cursor: pointer; transition: background 0.2s; }
-        .qty-btn:hover { background: rgba(250,246,238,0.05); }
-        .qty-num { width: 48px; text-align: center; font-size: 15px; font-weight: 500; color: var(--cream); border-left: 1px solid rgba(250,246,238,0.1); border-right: 1px solid rgba(250,246,238,0.1); line-height: 40px; }
+        .qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        .qty-label { color: rgba(250,246,238,0.4); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+        .qty-controls { display: flex; align-items: center; border: 1px solid rgba(201,138,20,0.2); }
+        .qty-btn { width: 40px; height: 40px; background: none; border: none; color: var(--cream); font-size: 18px; cursor: pointer; transition: background 0.2s; }
+        .qty-btn:hover { background: rgba(201,138,20,0.1); }
+        .qty-num { width: 48px; text-align: center; font-size: 15px; font-weight: 500; color: var(--cream); }
 
-        .add-btn {
-          width: 100%; padding: 18px; background: var(--gold); color: var(--ink);
-          font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 700;
-          letter-spacing: 3px; text-transform: uppercase; border: none; cursor: pointer;
-          transition: background 0.2s; margin-bottom: 12px;
-        }
-        .add-btn:hover { background: #d99a24; }
-        .add-btn.success { background: #4a7c59; color: #fff; }
+        .btn-cart { width: 100%; padding: 18px; background: var(--gold); color: var(--ink); font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; border: none; cursor: pointer; transition: background 0.2s; margin-bottom: 12px; }
+        .btn-cart:hover { background: #d99a24; }
+        .btn-cart.added { background: #152B1E; color: var(--gold); border: 1px solid var(--gold); }
+        .btn-view-cart { width: 100%; padding: 18px; background: transparent; color: var(--cream); font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; border: 1px solid rgba(250,246,238,0.15); cursor: pointer; transition: all 0.2s; margin-bottom: 32px; text-align: center; text-decoration: none; display: block; }
+        .btn-view-cart:hover { border-color: var(--gold); color: var(--gold); }
 
-        .trust-row { display: flex; gap: 24px; margin-top: 32px; padding-top: 32px; border-top: 1px solid rgba(201,138,20,0.1); }
-        .trust-item { display: flex; flex-direction: column; gap: 4px; }
-        .trust-label { font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); font-weight: 600; }
-        .trust-value { font-size: 12px; color: rgba(250,246,238,0.4); font-weight: 300; }
+        .trust-row { display: flex; gap: 24px; flex-wrap: wrap; }
+        .trust-item { display: flex; align-items: center; gap: 8px; }
+        .trust-dot { width: 3px; height: 3px; background: var(--gold); border-radius: 50%; }
+        .trust-text { color: rgba(250,246,238,0.35); font-size: 11px; font-weight: 300; }
 
-        .description { margin-top: 48px; padding-top: 48px; border-top: 1px solid rgba(201,138,20,0.1); }
-        .desc-text { color: rgba(250,246,238,0.5); font-size: 14.5px; line-height: 1.95; font-weight: 300; margin-bottom: 20px; }
-        .desc-text strong { color: var(--cream); font-weight: 500; }
+        .product-desc-section { padding: 96px 72px; background: var(--cream); }
+        .desc-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 96px; }
+        .desc-title { font-family: 'Cormorant Garamond', serif; color: var(--ink); font-size: 40px; font-weight: 700; line-height: 1.1; margin-bottom: 28px; }
+        .desc-title em { color: var(--gold); font-style: italic; }
+        .desc-body { color: var(--warm-gray); font-size: 15px; line-height: 1.95; font-weight: 300; margin-bottom: 20px; }
+        .desc-body strong { color: var(--ink); font-weight: 600; }
 
-        .footer {
-          background: var(--ink); padding: 44px 72px;
-          display: flex; justify-content: space-between; align-items: center;
-          border-top: 1px solid rgba(201,138,20,0.1); flex-wrap: wrap; gap: 24px;
-        }
+        .lab-box { background: var(--ink); padding: 36px; border-left: 3px solid var(--gold); }
+        .lab-title { font-family: 'Cormorant Garamond', serif; color: var(--cream); font-size: 22px; font-weight: 700; margin-bottom: 20px; }
+        .lab-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(250,246,238,0.06); }
+        .lab-row:last-child { border-bottom: none; }
+        .lab-key { color: rgba(250,246,238,0.4); font-size: 12px; font-weight: 300; }
+        .lab-val { color: var(--gold); font-size: 13px; font-weight: 600; }
+
+        .footer { background: var(--ink); padding: 44px 72px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(201,138,20,0.1); flex-wrap: wrap; gap: 24px; }
         .footer-logo { font-family: 'Cormorant Garamond', serif; color: var(--gold); font-size: 17px; letter-spacing: 4px; font-weight: 600; }
         .footer-meta p { color: rgba(250,246,238,0.22); font-size: 11px; line-height: 1.8; text-align: center; font-weight: 300; }
 
         @media (max-width: 768px) {
           .nav { padding: 18px 24px; }
-          .product-layout { grid-template-columns: 1fr; }
-          .product-gallery { position: static; height: 360px; }
-          .product-info { padding: 40px 28px; }
-          .product-name { font-size: 36px; }
-          .specs-grid { grid-template-columns: 1fr 1fr; }
+          .product-wrap { grid-template-columns: 1fr; }
+          .product-gallery { position: relative; height: 380px; top: 0; }
+          .product-detail { padding: 48px 28px; }
+          .specs-grid { grid-template-columns: 1fr; }
+          .product-desc-section { padding: 72px 28px; }
+          .desc-inner { grid-template-columns: 1fr; gap: 48px; }
           .footer { padding: 36px 28px; flex-direction: column; text-align: center; }
         }
       `}</style>
@@ -128,42 +123,47 @@ export default function TurmericPage() {
           <Link href="/" className="nav-logo">Nivora Organics&#8482;</Link>
           <div className="nav-right">
             <Link href="/products" className="nav-link">Products</Link>
-            <a href="https://instagram.com/nivoraorganics" className="nav-link">@nivoraorganics</a>
+            <Link href="/cart" className="nav-cart">
+              Cart {count > 0 && `(${count})`}
+            </Link>
           </div>
         </nav>
 
-        <div className="product-layout">
+        <div className="product-wrap">
           <div className="product-gallery">
-            <img
-              src="https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=1200&q=90"
-              alt="Organic Turmeric Powder"
-            />
+            <img src="https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=1200&q=90" alt="Organic Turmeric Powder" />
           </div>
 
-          <div className="product-info">
+          <div className="product-detail">
             <div className="breadcrumb">
+              <Link href="/" className="breadcrumb a">Home</Link>
+              <span className="breadcrumb-sep">›</span>
               <Link href="/products" className="breadcrumb a">Products</Link>
-              <span className="breadcrumb-sep">·</span>
-              <span style={{color: "rgba(250,246,238,0.5)", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase"}}>Turmeric</span>
+              <span className="breadcrumb-sep">›</span>
+              <span style={{color: "rgba(250,246,238,0.6)", fontSize: "11px", letterSpacing: "1.5px", textTransform: "uppercase"}}>Turmeric</span>
             </div>
 
             <span className="product-tag">Flagship · Launching Soon</span>
-            <h1 className="product-name">Organic Turmeric<br />Powder</h1>
-            <p className="product-sub">100g · Kerala Single Origin · Batch Lab Tested</p>
+            <h1 className="product-title">Organic Turmeric<br />Powder</h1>
+            <p className="product-subtitle">100g · Kerala Single Origin · Batch Lab Tested</p>
 
             <div className="price-row">
               <span className="price-main">₹149</span>
               <span className="price-mrp">₹199</span>
-              <span className="price-save">SAVE 25%</span>
+              <span className="price-save">25% OFF</span>
             </div>
+            <p className="price-note">Inclusive of all taxes · Free shipping on orders above ₹499</p>
 
-            <p className="section-title">Product Specs</p>
+            <div className="divider" />
+
             <div className="specs-grid">
               {[
-                { label: "Curcumin", value: "4.5%+" },
-                { label: "Weight", value: "100g" },
-                { label: "Origin", value: "Kerala" },
-                { label: "Lab", value: "NABL" },
+                { label: "Curcumin Content", value: "4.5%+ Verified" },
+                { label: "Lab Certification", value: "NABL Accredited" },
+                { label: "Origin", value: "Thrissur, Kerala" },
+                { label: "Packaging", value: "Kraft Ziplock 100g" },
+                { label: "Additives", value: "None · Zero" },
+                { label: "Certification", value: "PGS-India Organic" },
               ].map(s => (
                 <div className="spec-item" key={s.label}>
                   <div className="spec-label">{s.label}</div>
@@ -181,40 +181,50 @@ export default function TurmericPage() {
               </div>
             </div>
 
-            <button
-              className={`add-btn ${added ? "success" : ""}`}
-              onClick={handleAddToCart}
-            >
-              {added ? "✓ Added to Cart" : `Add to Cart — ₹${149 * qty}`}
+            <button className={`btn-cart ${added ? "added" : ""}`} onClick={handleAddToCart}>
+              {added ? "✓ Added to Cart" : "Add to Cart"}
             </button>
+            <Link href="/cart" className="btn-view-cart">View Cart</Link>
 
             <div className="trust-row">
-              {[
-                { label: "Lab Verified", value: "NABL Accredited" },
-                { label: "Shipping", value: "Amazon Prime · Day 1" },
-                { label: "Returns", value: "Easy 7-day returns" },
-              ].map(t => (
-                <div className="trust-item" key={t.label}>
-                  <span className="trust-label">{t.label}</span>
-                  <span className="trust-value">{t.value}</span>
+              {["NABL Lab Verified", "Zero Additives", "Single Origin Kerala", "Secure Checkout"].map(t => (
+                <div className="trust-item" key={t}>
+                  <div className="trust-dot" />
+                  <span className="trust-text">{t}</span>
                 </div>
               ))}
             </div>
-
-            <div className="description">
-              <p className="section-title">About This Product</p>
-              <p className="desc-text">
-                Grown in Kerala's red laterite soil where turmeric has been cultivated for centuries. Harvested at peak curcumin density. Processed without additives. <strong>Tested by a third-party NABL lab before it reaches your kitchen.</strong>
-              </p>
-              <p className="desc-text">
-                Most organic turmeric carries 1–2% curcumin. Ours is verified at a minimum of 4.5%. The lab report reference number is printed on every pack — ask us for the full document anytime.
-              </p>
-              <p className="desc-text">
-                <strong>One ingredient. Organic turmeric. Nothing else.</strong> No anti-caking agents, no flow additives, no synthetic colour, no starch fillers.
-              </p>
-            </div>
           </div>
         </div>
+
+        <section className="product-desc-section">
+          <div className="desc-inner">
+            <div>
+              <h2 className="desc-title">Why this turmeric<br />is <em>different.</em></h2>
+              <p className="desc-body">Most turmeric on the market contains between 1–2% curcumin. Ours is lab-verified at a minimum of 4.5% — more than double the commodity standard. This is not a marketing claim. It is a number on a lab report, referenced on every pack.</p>
+              <p className="desc-body"><strong>Grown in Kerala's red laterite soil</strong> where turmeric has been cultivated for centuries. Harvested at peak curcumin density. Stone-ground without heat treatment. Packed in kraft paper ziplock pouches with zero plastic contact.</p>
+              <p className="desc-body">One ingredient. The spice itself. Nothing else.</p>
+            </div>
+            <div>
+              <div className="lab-box">
+                <div className="lab-title">Lab Report Summary</div>
+                {[
+                  { key: "Curcumin Content", val: "4.5%+ (Min)" },
+                  { key: "Pesticide Residue", val: "Not Detected" },
+                  { key: "Heavy Metals", val: "Within FSSAI Limits" },
+                  { key: "Moisture Content", val: "≤ 10%" },
+                  { key: "Microbiology", val: "Pass" },
+                  { key: "Lab Accreditation", val: "NABL Certified" },
+                ].map(r => (
+                  <div className="lab-row" key={r.key}>
+                    <span className="lab-key">{r.key}</span>
+                    <span className="lab-val">{r.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
 
         <footer className="footer">
           <div className="footer-logo">Nivora Organics&#8482;</div>
