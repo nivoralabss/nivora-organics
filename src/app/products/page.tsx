@@ -1,7 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { supabase } from "../../lib/supabase";
 import { useCart } from "../context/CartContext";
 
@@ -16,20 +16,30 @@ image: string;
 };
 
 export default function ProductsPage() {
-const { count, addItem } = useCart();
+
+const { cart, count, addItem } = useCart();
+
 const [products, setProducts] = useState<Product[]>([]);
 const [loading, setLoading] = useState(true);
 
 useEffect(() => {
-const fetchProducts = async () => {
-const { data, error } = await supabase
-.from("products")
-.select("*")
-.order("name");
 
 ```
-  if (error) console.error(error);
-  if (data) setProducts(data);
+const fetchProducts = async () => {
+
+  const { data, error } = await supabase
+    .from("products")
+    .select("*")
+    .order("name");
+
+  if (error) {
+    console.error(error);
+  }
+
+  if (data) {
+    setProducts(data);
+  }
+
   setLoading(false);
 };
 
@@ -41,41 +51,75 @@ fetchProducts();
 return (
 <> <style>{`
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
---ink:#0E1410;
---gold:#C98A14;
---cream:#FAF6EE;
-}
-body{background:var(--ink)}
 
 ```
+    :root{
+      --ink:#0E1410;
+      --gold:#C98A14;
+      --cream:#FAF6EE;
+    }
+
+    body{
+      background:var(--ink);
+      color:var(--cream);
+      font-family:system-ui;
+    }
+
     .nav{
-      position:fixed;top:0;left:0;right:0;
-      display:flex;justify-content:space-between;
-      padding:20px 40px;
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:22px 48px;
       background:#0E1410;
+      border-bottom:1px solid rgba(255,255,255,0.05);
       z-index:100;
     }
 
     .nav-logo{
       color:var(--gold);
+      font-size:18px;
+      letter-spacing:3px;
       text-decoration:none;
-      font-weight:600;
     }
 
-    .nav-right{display:flex;gap:20px}
+    .nav-right{
+      display:flex;
+      gap:32px;
+      align-items:center;
+    }
 
-    .nav-link{color:var(--cream);text-decoration:none}
+    .nav-link{
+      color:#ccc;
+      text-decoration:none;
+      font-size:13px;
+      letter-spacing:1px;
+    }
 
-    .nav-cart{color:var(--gold)}
+    .nav-cart{
+      color:var(--gold);
+      font-weight:600;
+      text-decoration:none;
+    }
 
     .header{
-      padding:140px 60px 60px;
+      padding-top:140px;
+      padding-left:60px;
+      padding-right:60px;
+      padding-bottom:60px;
     }
 
-    .title{
+    .header h1{
       font-size:48px;
-      color:var(--cream);
+      margin-bottom:10px;
+    }
+
+    .header p{
+      opacity:.5;
+      font-size:14px;
     }
 
     .grid{
@@ -83,18 +127,14 @@ body{background:var(--ink)}
       margin:auto;
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:20px;
+      gap:24px;
       padding:40px;
     }
 
     .card{
       background:#111;
       border:1px solid rgba(255,255,255,0.05);
-      transition:all .3s;
-    }
-
-    .card:hover{
-      transform:translateY(-4px);
+      overflow:hidden;
     }
 
     .img{
@@ -103,69 +143,87 @@ body{background:var(--ink)}
       object-fit:cover;
     }
 
+    .placeholder{
+      width:100%;
+      height:240px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:48px;
+      color:#444;
+      background:#0b0b0b;
+    }
+
     .body{
-      padding:20px;
+      padding:22px;
     }
 
     .name{
       font-size:20px;
-      color:white;
       margin-bottom:6px;
     }
 
     .desc{
-      font-size:12px;
-      color:#aaa;
+      font-size:13px;
+      opacity:.6;
       margin-bottom:14px;
     }
 
     .price{
-      color:var(--gold);
       font-size:22px;
-      margin-bottom:14px;
+      color:var(--gold);
+      margin-bottom:16px;
     }
 
     .mrp{
-      color:#777;
+      font-size:13px;
+      opacity:.5;
       text-decoration:line-through;
-      font-size:12px;
       margin-left:6px;
     }
 
-    .cart-btn{
-      background:var(--gold);
-      border:none;
-      padding:10px 14px;
+    .btn{
+      width:100%;
+      padding:12px;
+      border:1px solid var(--gold);
+      background:transparent;
+      color:var(--gold);
       cursor:pointer;
-      font-weight:600;
+      letter-spacing:1px;
     }
 
-    .cart-btn:hover{
-      opacity:.9;
+    .btn:hover{
+      background:var(--gold);
+      color:#000;
     }
 
     .loading{
+      padding:120px;
       text-align:center;
-      padding:100px;
-      color:#999;
+      opacity:.5;
     }
 
     @media(max-width:900px){
-      .grid{grid-template-columns:repeat(2,1fr)}
+      .grid{
+        grid-template-columns:repeat(2,1fr);
+      }
     }
 
     @media(max-width:600px){
-      .grid{grid-template-columns:1fr}
+      .grid{
+        grid-template-columns:1fr;
+      }
     }
-
   `}</style>
 
   <nav className="nav">
+
     <Link href="/" className="nav-logo">
       Nivora Organics™
     </Link>
 
     <div className="nav-right">
+
       <Link href="/products" className="nav-link">
         Products
       </Link>
@@ -173,40 +231,51 @@ body{background:var(--ink)}
       <Link href="/cart" className="nav-cart">
         Cart {count > 0 && `(${count})`}
       </Link>
+
     </div>
+
   </nav>
 
   <div className="header">
-    <h1 className="title">Our Spices</h1>
+
+    <h1>Our Spices</h1>
+
+    {!loading && (
+      <p>{products.length} products · Kerala Single Origin · Lab Tested</p>
+    )}
+
   </div>
 
   {loading ? (
+
     <div className="loading">Loading products...</div>
+
   ) : (
+
     <div className="grid">
+
       {products.map((p) => {
-        const discount =
-          p.mrp > p.price
-            ? Math.round(((p.mrp - p.price) / p.mrp) * 100)
-            : 0;
+
+        const item = cart.find(i => i.slug === p.slug)
 
         return (
+
           <div className="card" key={p.id}>
+
             <Link href={`/products/${p.slug}`}>
+
               {p.image ? (
-                <Image
-                  src={p.image}
-                  alt={p.name}
-                  width={400}
-                  height={240}
-                  className="img"
-                />
+                <img src={p.image} alt={p.name} className="img"/>
               ) : (
-                <div className="img" />
+                <div className="placeholder">
+                  {p.name.charAt(0)}
+                </div>
               )}
+
             </Link>
 
             <div className="body">
+
               <div className="name">{p.name}</div>
 
               <div className="desc">{p.description}</div>
@@ -214,23 +283,33 @@ body{background:var(--ink)}
               <div className="price">
                 ₹{p.price}
                 <span className="mrp">₹{p.mrp}</span>
-                {discount > 0 && ` (${discount}% off)`}
               </div>
 
               <button
-                className="cart-btn"
-                onClick={() => addItem(p)}
+                className="btn"
+                onClick={(e) => {
+                  e.preventDefault()
+                  addItem(p)
+                }}
               >
-                Add to Cart
+                {item ? `ADDED (${item.qty})` : "ADD TO CART"}
               </button>
+
             </div>
+
           </div>
-        );
+
+        )
+
       })}
+
     </div>
+
   )}
+
 </>
 ```
 
 );
+
 }
