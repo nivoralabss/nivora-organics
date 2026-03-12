@@ -14,11 +14,12 @@ type Product = {
 };
 
 export default function Home() {
-  const { count } = useCart();
+  const { count, addItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [addedSlug, setAddedSlug] = useState("");
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,6 +28,13 @@ export default function Home() {
     };
     fetchProducts();
   }, []);
+
+  const handleAddToCart = (e: React.MouseEvent, p: Product) => {
+    e.preventDefault();
+    addItem({ slug: p.slug, name: p.name, price: p.price, qty: 1, image: p.image });
+    setAddedSlug(p.slug);
+    setTimeout(() => setAddedSlug(""), 1500);
+  };
 
   const handleSubmit = async () => {
     if (!email) return;
@@ -55,7 +63,6 @@ export default function Home() {
         body { background: var(--ink); -webkit-font-smoothing: antialiased; }
         .site { font-family: 'Jost', sans-serif; color: var(--cream); }
 
-        /* NAV */
         .nav {
           position: fixed; top: 0; left: 0; right: 0; z-index: 100;
           display: flex; justify-content: space-between; align-items: center;
@@ -72,7 +79,6 @@ export default function Home() {
         .nav-shop { background: var(--gold); color: var(--ink); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; font-weight: 700; padding: 10px 20px; transition: background 0.2s; }
         .nav-shop:hover { background: #d99a24; }
 
-        /* HERO */
         .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; }
         .hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=1800&q=90'); background-size: cover; background-position: center; }
         .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(14,20,16,0.72) 0%, rgba(14,20,16,0.50) 30%, rgba(14,20,16,0.80) 65%, rgba(14,20,16,0.99) 100%); }
@@ -90,19 +96,17 @@ export default function Home() {
         .btn-secondary { display: inline-block; padding: 18px 40px; background: transparent; color: var(--cream); font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; border: 1px solid rgba(250,246,238,0.25); transition: all 0.2s; }
         .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
 
-        /* STATS */
         .stats { background: var(--gold); display: flex; justify-content: center; flex-wrap: wrap; }
         .stat { padding: 22px 52px; text-align: center; border-right: 1px solid rgba(14,20,16,0.12); }
         .stat:last-child { border-right: none; }
         .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 700; color: var(--ink); display: block; line-height: 1; }
         .stat-label { font-size: 9px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(14,20,16,0.55); margin-top: 6px; display: block; font-weight: 600; }
 
-        /* FEATURED PRODUCTS */
         .featured { padding: 96px 72px; background: var(--ink); }
         .featured-header { max-width: 1200px; margin: 0 auto 56px; display: flex; justify-content: space-between; align-items: flex-end; }
         .featured-title { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; line-height: 1.1; }
         .featured-title em { color: var(--gold); font-style: italic; }
-        .view-all { color: var(--gold); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; font-weight: 600; border-bottom: 1px solid rgba(201,138,20,0.3); padding-bottom: 2px; transition: border-color 0.2s; }
+        .view-all { color: var(--gold); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; font-weight: 600; border-bottom: 1px solid rgba(201,138,20,0.3); padding-bottom: 2px; }
         .view-all:hover { border-color: var(--gold); }
         .products-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
         .product-card { background: rgba(250,246,238,0.02); border-top: 2px solid rgba(201,138,20,0.3); overflow: hidden; transition: background 0.3s; text-decoration: none; color: inherit; display: block; }
@@ -113,24 +117,25 @@ export default function Home() {
         .product-card-body { padding: 22px 22px 26px; }
         .product-card-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
         .product-card-desc { color: rgba(250,246,238,0.35); font-size: 12px; line-height: 1.7; font-weight: 300; margin-bottom: 14px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .product-card-price { display: flex; align-items: baseline; gap: 8px; }
+        .product-card-price { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
         .price-main { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 700; color: var(--gold); }
         .price-mrp { font-size: 12px; color: rgba(250,246,238,0.25); text-decoration: line-through; }
+        .card-add-btn { width: 100%; padding: 12px; background: transparent; border: 1px solid rgba(201,138,20,0.3); color: var(--gold); font-family: 'Jost', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+        .card-add-btn:hover { background: var(--gold); color: var(--ink); }
+        .card-add-btn.added { background: #152B1E; color: var(--gold); border-color: var(--gold); }
 
-        /* INSIGHT */
         .insight { background: var(--cream); padding: 110px 72px; }
         .insight-inner { max-width: 1080px; margin: 0 auto; display: grid; grid-template-columns: 320px 1fr; gap: 96px; align-items: start; }
         .insight-left { position: sticky; top: 120px; }
         .section-label { color: var(--gold); font-size: 9px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; display: block; font-weight: 600; }
         .insight-pull { font-family: 'Cormorant Garamond', serif; color: var(--ink); font-size: 24px; line-height: 1.55; font-style: italic; font-weight: 600; border-left: 2px solid var(--gold); padding-left: 24px; }
-        .insight-headline { font-family: 'Cormorant Garamond', serif; color: var(--ink); font-size: 44px; line-height: 1.12; font-weight: 700; margin-bottom: 32px; letter-spacing: -0.3px; }
+        .insight-headline { font-family: 'Cormorant Garamond', serif; color: var(--ink); font-size: 44px; line-height: 1.12; font-weight: 700; margin-bottom: 32px; }
         .insight-headline em { color: var(--gold); font-style: italic; }
         .insight-body { color: var(--warm-gray); font-size: 15.5px; line-height: 1.95; font-weight: 300; margin-bottom: 22px; }
         .insight-body strong { color: var(--ink); font-weight: 600; }
         .insight-callout { background: var(--ink); padding: 28px 32px; margin: 36px 0; border-left: 3px solid var(--gold); }
         .insight-callout p { font-family: 'Cormorant Garamond', serif; color: var(--cream); font-size: 20px; line-height: 1.65; font-style: italic; font-weight: 500; }
 
-        /* PILLARS */
         .pillars { background: var(--ink); padding: 96px 72px; }
         .pillars-header { max-width: 1080px; margin: 0 auto 64px; }
         .pillars-title { font-family: 'Cormorant Garamond', serif; color: var(--cream); font-size: 44px; font-weight: 700; line-height: 1.1; }
@@ -142,7 +147,6 @@ export default function Home() {
         .pillar-title { color: #fff; font-size: 17px; font-weight: 600; margin-bottom: 14px; }
         .pillar-desc { color: rgba(250,246,238,0.45); font-size: 14px; line-height: 1.85; font-weight: 300; }
 
-        /* NEWSLETTER */
         .newsletter { background: var(--forest); padding: 80px 72px; text-align: center; }
         .newsletter-title { font-family: 'Cormorant Garamond', serif; color: #fff; font-size: 40px; font-weight: 700; margin-bottom: 16px; }
         .newsletter-title em { color: var(--gold); font-style: italic; }
@@ -157,7 +161,6 @@ export default function Home() {
         .email-note { color: rgba(255,255,255,0.25); font-size: 11px; margin-top: 10px; font-weight: 300; }
         .email-note.success { color: rgba(201,138,20,0.8); }
 
-        /* FOOTER */
         .footer { background: var(--ink); padding: 44px 72px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(201,138,20,0.1); flex-wrap: wrap; gap: 24px; }
         .footer-logo { font-family: 'Cormorant Garamond', serif; color: var(--gold); font-size: 17px; letter-spacing: 4px; font-weight: 600; }
         .footer-meta p { color: rgba(250,246,238,0.22); font-size: 11px; line-height: 1.8; text-align: center; font-weight: 300; }
@@ -187,7 +190,6 @@ export default function Home() {
 
       <div className="site">
 
-        {/* NAV */}
         <nav className="nav">
           <Link href="/" className="nav-logo">Nivora Organics&#8482;</Link>
           <div className="nav-links">
@@ -199,7 +201,6 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* HERO */}
         <section className="hero">
           <div className="hero-img" />
           <div className="hero-overlay" />
@@ -223,7 +224,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* STATS */}
         <div className="stats">
           {[
             { num: "4.5%+", label: "Curcumin Verified" },
@@ -238,39 +238,40 @@ export default function Home() {
           ))}
         </div>
 
-        {/* FEATURED PRODUCTS */}
         <section className="featured">
           <div className="featured-header">
             <h2 className="featured-title">Featured<br /><em>Spices</em></h2>
             <Link href="/products" className="view-all">View All Products →</Link>
           </div>
           <div className="products-grid">
-            {products.map(p => {
-              const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-              return (
-                <Link href={`/products/${p.slug}`} className="product-card" key={p.slug}>
-                  {p.image ? (
-                    <img src={p.image} alt={p.name} className="product-card-img" />
-                  ) : (
-                    <div className="product-card-placeholder">
-                      <span className="placeholder-letter">{p.name.charAt(0)}</span>
-                    </div>
-                  )}
-                  <div className="product-card-body">
-                    <div className="product-card-name">{p.name}</div>
-                    <div className="product-card-desc">{p.description}</div>
-                    <div className="product-card-price">
-                      <span className="price-main">₹{p.price}</span>
-                      <span className="price-mrp">₹{p.mrp}</span>
-                    </div>
+            {products.map(p => (
+              <Link href={`/products/${p.slug}`} className="product-card" key={p.slug}>
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="product-card-img" />
+                ) : (
+                  <div className="product-card-placeholder">
+                    <span className="placeholder-letter">{p.name.charAt(0)}</span>
                   </div>
-                </Link>
-              );
-            })}
+                )}
+                <div className="product-card-body">
+                  <div className="product-card-name">{p.name}</div>
+                  <div className="product-card-desc">{p.description}</div>
+                  <div className="product-card-price">
+                    <span className="price-main">₹{p.price}</span>
+                    <span className="price-mrp">₹{p.mrp}</span>
+                  </div>
+                  <button
+                    className={`card-add-btn ${addedSlug === p.slug ? "added" : ""}`}
+                    onClick={(e) => handleAddToCart(e, p)}
+                  >
+                    {addedSlug === p.slug ? "✓ Added" : "+ Add to Cart"}
+                  </button>
+                </div>
+              </Link>
+            ))}
           </div>
         </section>
 
-        {/* ABOUT */}
         <section className="insight" id="about">
           <div className="insight-inner">
             <div className="insight-left">
@@ -289,7 +290,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PILLARS */}
         <section className="pillars">
           <div className="pillars-header">
             <span className="section-label">The Nivora Standard</span>
@@ -310,7 +310,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* NEWSLETTER */}
         <section className="newsletter">
           <h2 className="newsletter-title">Stay in the<br /><em>loop.</em></h2>
           <p className="newsletter-sub">New spices, lab reports, and launch updates. No spam, ever.</p>
@@ -327,7 +326,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* FOOTER */}
         <footer className="footer">
           <div className="footer-logo">Nivora Organics&#8482;</div>
           <div className="footer-meta">
